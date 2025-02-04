@@ -1,0 +1,26 @@
+{
+  "name": "monorepo-poc",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start:a": "npm start --workspace=package-a",
+    "build:b": "npm run build --workspace=package-b",
+    "start:b": "npm start --workspace=package-b"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/arandydj/monorepo-poc.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/arandydj/monorepo-poc/issues"
+  },
+  "homepage": "https://github.com/arandydj/monorepo-poc#readme",
+  "description": "",
+  "private": "true",
+  "workspaces": [
+    "packages/*"
+  ]
+}
