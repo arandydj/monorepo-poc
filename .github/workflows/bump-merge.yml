@@ -1,0 +1,26 @@
+name: Monorepo Version Bump
+on:
+  push:
+    branches:
+      - main
+jobs:
+  version-bump:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: Determine Changed Packages
+        run: |
+          changed_pkgs=$(git diff --name-only HEAD~1 | grep -E '^packages/[^/]+/package.json$' | sed 's/packages/\([^/]+\)/package.json/\1/')
+          echo "CHANGED_PKGS=$changed_pkgs" >> $GITHUB_ENV
+      - name: Bump Versions
+        run: |
+          for pkg in $CHANGED_PKGS; do
+            cd "packages/$pkg"
+            version=$(npm version --no-git-tag)
+            echo "Bumping $pkg to version $version"
+            git add package.json
+          done
+          git commit -m "chore(release): bump versions for changed packages"
+          git push
