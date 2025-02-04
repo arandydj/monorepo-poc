@@ -8,11 +8,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2        
-        with:
+          with:
+          token: ${{ secrets.GITHUB_TOKEN }}
           fetch-depth: 0
       - name: Bump Version
         run: |
-          git config --global user.name "arandydj"
-          git config --global user.email "randy.aguirre@dowjones.com"
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
           npm version patch
           git push
