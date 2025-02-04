@@ -8,12 +8,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Custom version bump
-        uses: TriPSs/conventional-changelog-action@master
+      - name: Bump version and push tag
+        uses: changesets/action@v1
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          git-message: 'chore(release): {version}'
-          preset: 'angular'
-          tag-prefix: 'v'
-          output-file: 'CHANGELOG.md'
-          commit-pattern: '^((?:feat|fix|docs|style|refactor|perf|test|build|ci|chore|revert|BREAKING CHANGE).*)$'
+          commit-message: 'chore(release): {version}'
