@@ -8,8 +8,19 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Bump version and push tag
-        uses: changesets/action@v1
         with:
-          github-token: ${{ secrets.TOKEN_ACTION }}
-          commit-message: 'chore(release): {version}'
+          fetch-depth: 0
+      - name: Prepare
+        run: |
+          npm install @changesets/cli
+          npx changeset init
+      - name: Add Changes
+        run: |
+          npx changeset add
+      - name: Precommit
+        run: |
+          npx changeset precommit
+      - name: Publish
+        run: |
+          npx changesets publish
+          git push
