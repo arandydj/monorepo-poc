@@ -11,9 +11,23 @@ jobs:
         with:
           token: ${{ secrets.TOKEN_ACTION }}
           fetch-depth: 0
-      - name: Bump Version
+#       - name: Bump Version
+#         run: |
+#           git config --global user.name "arandydj"
+#           git config --global user.email "Randy.Aguirre@dowjones.com"
+#           npm version patch
+#           git push
+      - name: Determine Changed Packages
         run: |
-          git config --global user.name "arandydj"
-          git config --global user.email "Randy.Aguirre@dowjones.com"
-          npm version patch
+          changed_pkgs=$(git diff --name-only HEAD~1 | grep -E '^packages/[^/]+/package.json$' | sed 's/packages/\([^/]+\)/package.json/\1/')
+          echo "CHANGED_PKGS=$changed_pkgs" >> $GITHUB_ENV
+      - name: Bump Versions
+        run: |
+          for pkg in $CHANGED_PKGS; do
+            cd "packages/$pkg"
+            npm version patch
+            cd ..
+            git add "packages/$pkg/package.json"
+          done
+          git commit -m "chore: bump versions for changed packages"
           git push
