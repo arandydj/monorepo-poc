@@ -16,11 +16,19 @@ jobs:
           npx changeset init
       - name: Add Changes
         run: |
-          npx changeset add
+          if ! npx changeset add; then
+            echo "No changes detected"
+            exit 0
+          fi
       - name: Precommit
         run: |
-          npx changeset precommit
+          if ! npx changeset precommit; then
+            echo "No changes to commit"
+            exit 0
+          fi
       - name: Publish
         run: |
           npx changesets publish
           git push
+        env:
+          GITHUB_TOKEN: ${{ secrets.TOKEN_ACTION }}
