@@ -11,5 +11,5 @@ jobs:
       - name: Bump version and push tag
         uses: changesets/action@v1
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          github-token: ${{ secrets.TOKEN_ACTION }}
           commit-message: 'chore(release): {version}'
