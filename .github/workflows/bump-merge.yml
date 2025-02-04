@@ -9,7 +9,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2        
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.TOKEN_ACTION }}
           fetch-depth: 0
       - name: Bump Version
         run: |
