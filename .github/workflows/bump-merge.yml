@@ -13,5 +13,7 @@ jobs:
           fetch-depth: 0
       - name: Bump Version
         run: |
+          git config --global user.name "arandydj"
+          git config --global user.email "Randy.Aguirre@dowjones.com"
           npm version patch
           git push
