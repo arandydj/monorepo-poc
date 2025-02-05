@@ -23,6 +23,9 @@ jobs:
           echo "CHANGED_PKGS=$changed_pkgs" >> $GITHUB_ENV
       - name: Bump Versions
         run: |
+          git config --global user.name "arandydj"
+          git config --global user.email "Randy.Aguirre@dowjones.com"
+          
           for pkg in $CHANGED_PKGS; do
             cd "packages/$pkg"
             npm version patch
