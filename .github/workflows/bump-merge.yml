@@ -19,7 +19,7 @@ jobs:
 #           git push
       - name: Determine Changed Packages
         run: |
-          changed_pkgs=$(git diff --name-only HEAD~1 | grep -E '^packages/[^/]+/package.json$' | sed 's/packages/\([^/]+\)/package.json/\1/')
+          changed_pkgs=$(git diff --name-only HEAD~1 | grep -E '^packages/[^/]+/package.json$' | sed -E 's|^packages/([^/]+)/package.json|\1|')
           echo "CHANGED_PKGS=$changed_pkgs" >> $GITHUB_ENV
       - name: Bump Versions
         run: |
