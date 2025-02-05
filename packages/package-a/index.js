@@ -1,5 +1,5 @@
 function greet(name) {
-    return `Hello, ${name} (from package-a)`
+    return `Hello, ${name} (from another package)`
 }
 
 // console.log("minor change")
