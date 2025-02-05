@@ -2,7 +2,7 @@ name: Custom version bump
 on:
   push:
     branches:
-      - main
+      - main-test
 jobs:
   build:
     runs-on: ubuntu-latest
