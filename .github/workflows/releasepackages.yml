@@ -1,0 +1,49 @@
+name: Release Packages
+
+on:
+  push:
+    branches:
+      - 'release/**' # Trigger on ANY branch starting with 'release/'
+
+jobs:
+  release-please:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Extract Branch, Major Version, and Package Name
+        id: extract_info
+        shell: bash
+        run: |
+          BRANCH_NAME="${GITHUB_REF#refs/heads/}"
+          # Extract major version. Improved regex for major version
+          MAJOR_VERSION=$(echo "$BRANCH_NAME" | grep -oE '+' | head -n 1) # Extract the first number
+          # Extract package name from the branch name (generic)
+          PACKAGE_NAME=$(echo "$BRANCH_NAME" | cut -d '-' -f 2) # Extract the part after the first hyphen
+          echo "::set-output name=branch_name::$BRANCH_NAME"
+          echo "::set-output name=major_version::$MAJOR_VERSION"
+          echo "::set-output name=package_name::$PACKAGE_NAME"
+          echo "::set-output name=package_path::packages/$PACKAGE_NAME" # Construct package path
+
+      - name: Release ${{ steps.extract_info.outputs.package_name }} ${{ steps.extract_info.outputs.major_version }}.x
+        id: release_please
+        uses: googleapis/release-please-action@v3
+        with:
+          release-type: node # Or your package type
+          token: ${{ secrets.GITHUB_TOKEN }}
+          path: ${{ steps.extract_info.outputs.package_path }} # Use dynamic path
+          package-name: "@${{ github.repository_owner }}/${{ steps.extract_info.outputs.package_name }}" # If scoped packages
+          monorepo-tags: true # If using monorepo tags
+          target-branch: ${{ steps.extract_info.outputs.branch_name }}
+          release-branch: ${{ steps.extract_info.outputs.branch_name }}
+          default-branch: ${{ steps.extract_info.outputs.branch_name }}
+          release-pr-labels: release, ${{ steps.extract_info.outputs.major_version }}.x, ${{ steps.extract_info.outputs.package_name }}
+          tag-name: v${{ steps.extract_info.outputs.major_version }}.x-${{ steps.extract_info.outputs.package_name }}-${{ steps.release_please.outputs.release_version }}
+          release-name: v${{ steps.extract_info.outputs.major_version }}.x-${{ steps.extract_info.outputs.package_name }}-${{ steps.release_please.outputs.release_version }}
+
+      - name: Display Output
+        if: always()
+        run: |
+          echo "Release Version: ${{ steps.release_please.outputs.release_version }}"
+          echo "Tag Name: v${{ steps.extract_info.outputs.major_version }}.x-${{ steps.extract_info.outputs.package_name }}-${{ steps.release_please.outputs.release_version }}"
+          echo "Release Name: v${{ steps.extract_info.outputs.major_version }}.x-${{ steps.extract_info.outputs.package_name }}-${{ steps.release_please.outputs.release_version }}"
+          echo "Package Path: ${{ steps.extract_info.outputs.package_path }}" # Show the constructed path
